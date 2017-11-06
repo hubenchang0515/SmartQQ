@@ -41,7 +41,7 @@ def show_qrcode(f) :
 			if(qr_img.getpixel((x*5+2,y*5+2)) == 0) :
 				print('  ',end='')
 			else :
-				print('██',end='')
+				print('@@',end='')
 		print('')
 	qr_img.close()
 	

@@ -25,4 +25,4 @@ def callback(smartqq, pack) :
 		
 qq = SmartQQ.SmartQQ()
 qq.login()
-qq.start(callback，True)
+qq.start(callback, True)
