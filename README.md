@@ -108,14 +108,14 @@ def group_code(self, glist, gin)
 
 ### SmartQQ.group_member_list
 获取群组的成员列表
-```
+```Python
 def group_member_list(self, gcode)
 ```
 ``gcode`` - 群组的gcode
 
 ### SmartQQ.group_member_name
 获取群组成员的名字
-```
+```Python
 def group_member_name(self,mlist, uin)
 ```
 ``mlist`` - 群组成员列表
@@ -123,20 +123,20 @@ def group_member_name(self,mlist, uin)
 
 ### SmartQQ.friend_list
 获取好友列表
-```
+```Python
 def friend_list(self)
 ```
 
 ### SmartQQ.friend_info
 获取好友信息
-```
+```Python
 def friend_info(self, uin)
 ```
 ``uin`` - 好友的uin
 
 ## SmartQQ.friend_name
 获取好友的名字
-```
+```Python
 def friend_name(self, uin)
 ```
 ``uin`` - 好友的uin
