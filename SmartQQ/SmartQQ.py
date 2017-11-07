@@ -232,7 +232,7 @@ class SmartQQ(object) :
 	
 	# 获取好友名称
 	def friend_name(self, uin) :
-		return self.friend_info(self.qqsession, uin)['nick']
+		return self.friend_info(uin)['nick']
 	
 
 	# 获取消息并响应
