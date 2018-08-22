@@ -13,7 +13,26 @@ import re
 import threading
 import signal
 from smartqq_hash import *
+from functools import wraps
 
+def _cache_result(expired_seconds):
+    def __wrapper(func):
+        @wraps(func)
+        def __call(self, *args, **kwargs):
+            now = time.time()
+            func_name = '_%s_result' % func.__name__
+            update_time_name = '_%s_update_time' % func.__name__
+            if hasattr(self, func_name) and hasattr(self, update_time_name):
+                if now - getattr(self, update_time_name) < expired_seconds:
+                    return getattr(self, func_name)
+
+            result = func(self, *args, **kwargs)
+            setattr(self, func_name, result)
+            setattr(self, update_time_name, now)
+            return result
+        return __call
+
+    return __wrapper
 
 # 下载二维码并获取cookie
 def get_qrcode(img):
@@ -174,6 +193,7 @@ class SmartQQ(object):
         response = requests.post(send_friend_url, headers=header, data=PostParam, cookies=self.cookie)
 
     # 获取群组列表
+    @_cache_result(1800)
     def group_list(self):
         if hasattr(self, '_group_list') and hasattr(self, '_group_list_update_time'):
             now = time.time()
@@ -206,6 +226,7 @@ class SmartQQ(object):
         return None
 
     # 获取群成员信息列表
+    @_cache_result(1800)
     def group_member_list(self, gcode):
         url = "https://s.web2.qq.com/api/get_group_info_ext2?" \
               "gcode=%s&vfwebqq=%s&t=1509848166519" % (gcode, self.vfwebqq)
@@ -222,6 +243,7 @@ class SmartQQ(object):
         return None
 
     # 获取好友列表
+    @_cache_result(1800)
     def friend_list(self):
         url = "https://s.web2.qq.com/api/get_user_friends2"
         header = {"origin": "https://s.web2.qq.com",
@@ -230,9 +252,11 @@ class SmartQQ(object):
         PostParam = {"r": '{"vfwebqq":"%s","hash":"%s"}' % (self.vfwebqq, hash2(self.qq, self.ptwebqq))}
         response = requests.post(url, headers=header, data=PostParam, cookies=self.cookie)
         rjson = json.loads(response.content.decode("utf8"))
+
         return rjson['result']['info']
 
     # 获取好友信息
+    @_cache_result(1800)
     def friend_info(self, uin):
         url = "https://s.web2.qq.com/api/get_friend_info2?tuin=%d&vfwebqq=%s" \
               "&clientid=53999199&psessionid=%s&t=1509850702128" % (uin, self.vfwebqq, self.psessionid)
